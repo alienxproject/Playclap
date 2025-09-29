@@ -15,14 +15,28 @@ $video_url = get_post_meta( get_the_ID(), 'video_url', true );
 	<main id="primary" class="site-main" data-wp-template-part="main">
 		<div class="main-content">
 		<div class="video-container">
-		<div id="video-container"
-			 data-wp-interactive="playneko"
-			 data-wp-template-part="main"
-			 data-video-url="<?php echo esc_url($video_url); ?>"
-			 data-poster="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'full')); ?>">
+    <?php
+    // ambil embed iframe dari custom field (misal TubeAce simpan di _video_embed)
+    $video_embed = get_post_meta(get_the_ID(), '_video_embed', true);
+    ?>
 
-			</div>
-			<div class="video-meta">
+    <?php if ( ! empty($video_embed) && strpos($video_embed, '<iframe') !== false ) : ?>
+        <!-- Tampilkan embed iframe -->
+        <div class="video-embed">
+            <?php echo $video_embed; ?>
+        </div>
+
+    <?php elseif ( ! empty($video_url) ) : ?>
+        <!-- Fallback ke ArtPlayer.js (default PlayNeko) -->
+        <div id="video-container"
+             data-wp-interactive="playneko"
+             data-wp-template-part="main"
+             data-video-url="<?php echo esc_url($video_url); ?>"
+             data-poster="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'full')); ?>">
+        </div>
+    <?php endif; ?>
+
+    <div class="video-meta">
 
 
 			<a href="#comments" class="comments btnff" aria-label="Total Number of Comments"  title="Total Number of Comments">
